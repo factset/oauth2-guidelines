@@ -1,4 +1,4 @@
-# FactSet APIs and OAuth 2.0
+# FactSet's OAuth 2.0 Guidelines
 
 FactSet APIs use OAuth 2.0 for authentication and authorization. Public and Confidential Clients are supported, along with the Client Credentials and the Authorization Code flows. This document specifies the requirements of Client applications, and it details the flows, including the expected properties in all messages. It provides the location of the Discovery Document, containing the OAuth 2.0 URIs for the Authorization and the Token endpoints. And, with the aid of bash shell scripts in this repository, this document explains how to test.
 
