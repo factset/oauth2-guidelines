@@ -40,6 +40,7 @@ FactSet APIs use OAuth 2.0 for authentication and authorization. Public and Conf
   * [Accessing Protected Resources](#accessing-protected-resources)
     + [Script Execution](#script-execution-3)
     + [Script Internals](#script-internals-3)
+  * [Token Exchange Flow](#token-exchange-flow) 
 - [Cache Strategies](#cache-strategies)
   * [Discovery Document](#discovery-document-1)
   * [Access Tokens](#access-tokens)
@@ -69,7 +70,7 @@ Confidential Client applications can securely store private signing keys, enabli
   
 * Authorization Code grant type requires the [PKCE](https://tools.ietf.org/html/rfc7636) extension to ensure that the application that initiated the flow is the same as the one which completes it. The S256 code challenge method must be used to protect against disclosure of the code verifier value.
 
-* Confidential Clients prove identity with [JSON Web Signature (JWS)](https://tools.ietf.org/html/rfc7515#section-3), a.k.a. signed [JSON Web Token (JWT)](https://tools.ietf.org/html/rfc7519#section-5.1). Before a Confidential Client participates in an OAuth 2.0 flow, the public signing keys used to authenticate the signatures of messages sent by the Client must be registered with Authentication Server via the Developer Portal.
+* Confidential Clients prove identity with [JSON Web Signature (JWS)](https://tools.ietf.org/html/rfc7515#section-3), a.k.a. signed [JSON Web Token (JWT)](https://tools.ietf.org/html/rfc7519#section-5.1). Before a Confidential Client participates in an OAuth 2.0 flow, the public signing keys used to authenticate the signatures of messages sent by the Client must be registered with Authentication Server via the [Developer Portal](https://developer.factset.com/applications).
 
 * The redirection URI provided in the Authorization Code request must exactly match one of registered URIs. FactSet's Authorization Server restricts redirection URIs to a fixed set of absolute HTTPS URIs without wildcard domains, paths, or query string components. Since the Authorization Server exclusively delivers the authorization code to an absolute registered URI, the redirection URI provided in the request serves as additional proof of Client application identity. Refer to [OAuth 2.0 Security Best Current Practice](https://tools.ietf.org/html/draft-ietf-oauth-security-topics-16#section-4.1) for further details.
 
@@ -177,7 +178,7 @@ eyJ98f8GQ789Km0LI35U63naTHiEvBoHXXTIIEHwFImxcphYY1PkKl7tMH7zPUI9jXbNJM8YPagLc5bL
 
 ## JWK Set (JWKS)
 
-Before a Confidential Client participates in an OAuth 2.0 flow, the public signing keys used to verify the identity of the Client must be registered with FactSet’s Authentication Server via the Developer Portal. The Developer Portal only accepts signing keys in [JWK Set (JWKS)](https://tools.ietf.org/html/rfc7517#section-5) format, a JSON document containing an array of [JSON Web Key (JWK)](https://tools.ietf.org/html/rfc7517) objects. If a provided JWKS contains public-private key-pairs, the Developer Portal will transform the key-pairs into public keys prior to storage. If a JWKS is not provided, the Developer Portal will generate and return a JWKS containing a single public-private key-pair; and it will store only the generated public key.
+Before a Confidential Client participates in an OAuth 2.0 flow, the public signing keys used to verify the identity of the Client must be registered with FactSet’s Authentication Server via the [Developer Portal](https://developer.factset.com/applications). The Developer Portal only accepts signing keys in [JWK Set (JWKS)](https://tools.ietf.org/html/rfc7517#section-5) format, a JSON document containing an array of [JSON Web Key (JWK)](https://tools.ietf.org/html/rfc7517) objects. If a provided JWKS contains public-private key-pairs, the Developer Portal will transform the key-pairs into public keys prior to storage. If a JWKS is not provided, the Developer Portal will generate and return a JWKS containing a single public-private key-pair; and it will store only the generated public key.
 
 ### JWK Parameters
 
@@ -446,10 +447,10 @@ VjSVmCDiaejIhfTWpugSxXteXtHT
 Bearer
 
 [expires_in]
-28799
+899
 ```
 
-The result is an [Access Token](https://tools.ietf.org/html/rfc6749#section-1.4). In this case, it is an opaque [Bearer Token](https://tools.ietf.org/html/rfc6750#section-1.2) that expires in approximately 8 hours. 
+The result is an [Access Token](https://tools.ietf.org/html/rfc6749#section-1.4). In this case, it is an opaque [Bearer Token](https://tools.ietf.org/html/rfc6750#section-1.2) that expires in approximately 15 minutes. 
 
 The Access Token format and the expiration time are subject to change. A Client application must treat the Access Token as opaque regardless of the actual format. And it must respect the expiration time contained in the response. 
 
@@ -465,7 +466,7 @@ suzzoIyBVtTX5vtVoliErqistX4x
 Bearer
 
 [expires_in]
-28799
+899
 ```
 
 #### Script Internals
@@ -514,7 +515,7 @@ The response is a JSON document containing an Access Token.
 {
   "access_token":"qUYZRl9r5bxmPKuMlt4d6OvcQzLE",
   "token_type":"Bearer",
-  "expires_in":28799
+  "expires_in":899
 }
 ```
 
@@ -743,10 +744,10 @@ YQCeT84qiH7zPUI9jxbNRM8rPWgY85b1PjDfNwrbN3
 Bearer
 
 [expires_in]
-28799
+899
 ```
 
-The result is an [Access Token](https://tools.ietf.org/html/rfc6749#section-1.4) and a [Refresh Token](https://tools.ietf.org/html/rfc6749#section-1.5). In this case, the Access Token is an opaque [Bearer Token](https://tools.ietf.org/html/rfc6750#section-1.2) that expires in approximately 8 hours. 
+The result is an [Access Token](https://tools.ietf.org/html/rfc6749#section-1.4) and a [Refresh Token](https://tools.ietf.org/html/rfc6749#section-1.5). In this case, the Access Token is an opaque [Bearer Token](https://tools.ietf.org/html/rfc6750#section-1.2) that expires in approximately 15 minutes. 
 
 The Access Token format and the expiration time are subject to change. A Client application must treat the Access Token as opaque regardless of the actual format. And it must respect the expiration time contained in the response.
 
@@ -770,7 +771,7 @@ https://api.factset.com/analytics/engines.fullcontrol https://api.factset.com/an
 Bearer
 
 [expires_in]
-28799
+899
 ```
 
 If the Resource Owner removes all scopes, the response includes an empty ```scope``` property:
@@ -791,7 +792,7 @@ bW03Erc3rIlLtpZCIcLD82Rr1T1uRE2IBWHmEzNfRo
 Bearer
 
 [expires_in]
-28799
+899
 ```
 
 ```create-auth-code-url.sh``` and ```request-tokens-with-auth-code.sh``` must be run with the proper arguments within a 5-minute window to successfully complete an Authorization Code flow. Missing the window results in an error like the one below.
@@ -906,7 +907,7 @@ The POST response is a JSON document containing an Access Token and possibly a R
   "access_token":"f8GQ789Km0LI35U63naTHiEvBoHX",
   "refresh_token":"YQCeT84qiH7zPUI9jxbNRM8rPWgY85b1PjDfNwrbN3",
   "token_type":"Bearer",
-  "expires_in":28799
+  "expires_in":899
 }
 ```
 
@@ -975,7 +976,7 @@ r3cd5czUdE8szHxXLICTmXBfqtHKQUsyMw6Rtp3ai
 Bearer
 
 [expires_in]
-28799
+899
 ```
 
 The back-channel phase obtains an Access Token and a Refresh Token. Note, depending on how the Client was registered with the Developer Portal, Authorization Code flow may not provide a Refresh Token.
@@ -1008,10 +1009,10 @@ rif6giVTkMDplgMV8w5eUXyup1zU
 Bearer
 
 [expires_in]
-28799
+899
 ```
 
-The result is a new [Access Token](https://tools.ietf.org/html/rfc6749#section-1.4). In this case, it is an opaque [Bearer Token](https://tools.ietf.org/html/rfc6750#section-1.2) that expires in approximately 8 hours.
+The result is a new [Access Token](https://tools.ietf.org/html/rfc6749#section-1.4). In this case, it is an opaque [Bearer Token](https://tools.ietf.org/html/rfc6750#section-1.2) that expires in approximately 15 minutes.
 
 The Access Token format and the expiration time are subject to change. A Client application must treat the Access Token as opaque regardless of the actual format. And it must respect the expiration time contained in the response.
 
@@ -1030,7 +1031,7 @@ uk0XibHWOi6vp0yfQXfW5KjF81ATYxpIEvC3LaAyk
 Bearer
 
 [expires_in]
-28799
+899
 ```
 
 Issuing a new Refresh Token expires the old one. The following examples proves this by attempting to use the original. 
@@ -1067,7 +1068,7 @@ ou0ChNEgmfgBHGsb2dL4sodT9plC
 Bearer
 
 [expires_in]
-28799
+899
 ```
 
 To remove all scopes, set the list to a single space:
@@ -1082,7 +1083,7 @@ ou0ChNEgmfgBHGsb2dL4sodT9plC
 Bearer
 
 [expires_in]
-28799
+899
 ```
 
 In the following example, an attempt is made to widen the scopes list.
@@ -1183,7 +1184,7 @@ The POST response is a JSON document containing a newly issued Access Token.
 {
   "access_token":"cPucQzRlWW5VxmqUYZPizNlLEt5d",
   "token_type":"Bearer",
-  "expires_in":28799
+  "expires_in":899
 }
 ```
 
@@ -1194,9 +1195,10 @@ If the submitted Refresh Token is more than 24 hours old, the request will cause
   "access_token":"PjDfNvebN6cPucQzRlKl7tMH7zPU",
   "refresh_token":"w8eT84qrPWgY85b2PmDrNwrbNMYqCiH7zPUI99xbNR",
   "token_type":"Bearer",
-  "expires_in":28799
+  "expires_in":899
 }
 ```
+
 
 ### Accessing Protected Resources
 
@@ -1229,7 +1231,7 @@ WmYhMqeQqeWrraziCcDEMGFPMHnm
 Bearer
 
 [expires_in]
-28799
+899
 ```
 
 Below, the newly issued Access Token is provided as an argument of ```access-protected-resource.sh``` along with the URL of the endpoint that lists all the frequencies that can be applied to a PA calculation. Note that, while FactSet scope names resemble URLs, there is not necessarily a 1-to-1 correspondence between a scope name and a FactSet API endpoint.
@@ -1304,6 +1306,51 @@ location: https://login.factset.com/login/login.html?redirect=https%3A%2F%2Fapi.
 cache-control: no-cache, no-store
 content-length: 0
 ```
+### Token Exchange Flow
+
+In [Token Exchange Flow](https://www.rfc-editor.org/rfc/rfc8693.html), the Client application obtains a User Token&mdash;a [JWS](#json-web-signature-jws) containing an identifier that corresponds to a machine account the Client wants to impersonate&mdash;from the Client's Authentication Server. The Client application sends the User Token to FactSet's Authorization Server, which responds with an Access Token with the rights of the machine account.
+
+Before a Client application employs Token Exchange, a [Confidental Client](#confidential-clients) must be created via the [Developer Portal](https://developer.factset.com/applications), and configured for Token Exchange. Please work with your FactSet Engineering contact on this process. Be prepared to provide the Client ID, the Authorization Server's JWKS URI, the Authorization Server's issuer, the identifier in the User Token, and the machine account the identifier corresponds to.
+
+Note: FactSet's Authorization Server requires a JWKS URI, a public URI that contains the signing keys for the User Token.
+
+The steps of Token Exchange follow.
+
+The Client application obtains a User Token from its Authorization Server. In the User Token's payload, the [Issuer (iss)](https://tools.ietf.org/html/rfc7519#section-4.1.1) and the [Subject (sub)](https://tools.ietf.org/html/rfc7519#section-4.1.2) must match the registered values. Refer to the [JSON Web Signature (JWS)](#json-web-signature-jws) section for the remaining payload the fields, the JOSE header, and the JWS signature.
+
+The Client application sends the User Token to FactSet's Authorization Server:
+
+```
+POST /as/token.oauth2 HTTP/1.1
+Host: https://auth.factset.com 
+Content-Type: application/x-www-form-urlencoded 
+
+grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Atoken-exchange
+&subject_token=eyJiEv61PkKl7CMH7oHXqTIIELc5bLP2xcphYYzPMI9jXbNJM...8YP9Km0c5bLP
+&subject_token_type=urn%3Aietf%3Aparams%3Aoauth%3Atoken-type%3Ajwt
+``` 
+
+Below is an explanation of each request body query parameter.
+
+* ```grant_type``` is ```urn:ietf:params:oauth:grant-type:token-exchange``` to indicate Token Exchange.
+
+* ```subject_token``` is the User Token, the generated JWS used to authenticate the Client.
+
+* ```subject_token_type``` is ```urn:ietf:params:oauth:token-type:jwt``` to specify the subject token type as JWT.
+
+FactSet's Authorization Server returns an Access Token:
+
+```
+HTTP/1.1 200 OK
+Content-Type: application/json
+Cache-Control: no-cache, no-store
+{
+  "access_token":"f8GQ789Km0LI35U63naTHiEvBoHX",
+  "issued_token_type":"urn:ietf:params:oauth:token-type:access_token",
+  "token_type":"Bearer",
+  "expires_in":899
+}
+```
 
 ## Cache Strategies
 
@@ -1327,10 +1374,10 @@ WmYhMqeQqeWrraziCcDEMGFPMHnm
 Bearer
 
 [expires_in]
-28799
+899
 ```
 
-In this case, the Access Token expires in 28,799 seconds, or approximately 8 hours. It can be reused for that period, providing access to multiple FactSet API endpoints without repeating an OAuth 2.0 flow.
+In this case, the Access Token expires in 899 seconds, or approximately 15 minutes. It can be reused for that period, providing access to multiple FactSet API endpoints without repeating an OAuth 2.0 flow.
 
 The Resource Owner can rescind permissions granted to a Client at any time. Attempting to access a FactSet API endpoint with an expired Access Token will result in a [401 Unauthorized](https://tools.ietf.org/html/rfc7235#section-3.1).
 
@@ -1351,7 +1398,7 @@ r3cd5czUdE8szHxXLICTmXBfqtHKQUsyMw6Rtp3ai
 Bearer
 
 [expires_in]
-28799
+899
 ```
 
 Here are some rules governing Refresh Token expiration:
